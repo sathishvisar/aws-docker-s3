@@ -1,4 +1,3 @@
-GNU nano 5.8                                                                  Dockerfile                                                                            
 # Use the official Node.js image as a base
 FROM node:18
 
