@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    steps:
+  steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
@@ -21,8 +21,8 @@ jobs:
 
     - name: Build and tag Docker image
       run: |
-        docker build -t my-node-app .
-        docker tag my-node-app:latest sathishvisar/my-image-name:latest
+        docker build -t sathishvisar/my-image-name:latest .
+        docker tag sathishvisar/my-image-name:latest sathishvisar/my-image-name:latest
 
     - name: Push Docker image to Docker Hub
       run: docker push sathishvisar/my-image-name:latest
