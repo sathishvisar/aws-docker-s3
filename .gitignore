@@ -1,0 +1,14 @@
+public/libs
+public/data
+node_modules
+public/js
+public/css/*.css
+temp
+env.json
+.DS_Store
+public/external_posts_images/*.jpg
+.vscode
+logs
+.history
+.idea/
+package-lock.json
