@@ -1,70 +1,46 @@
-name: Node.js CI/CD
+name: Deploy to Amazon ECS
 
 on:
   push:
     branches:
-      - master  # Change this to your default branch if different
-  pull_request:
-    branches:
       - master
 
 jobs:
-  build:
-
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    # - name: Set up Node.js
-    #   uses: actions/setup-node@v2
-    #   with:
-    #     node-version: '18'  # Specify the Node.js version you want to use
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16' # Specify your Node.js version
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get install -y awscli
 
-    # - name: Run tests
-    #   run: npm test
+      - name: Create .ssh directory
+        run: mkdir -p ~/.ssh
 
-    # - name: Build the application
-    #   run: npm run build
+      - name: Add SSH key
+        env:
+          DEPLOY_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          echo "$DEPLOY_KEY" > deploy_key
+          chmod 600 deploy_key
+          ssh-keyscan -H 13.60.98.236 >> ~/.ssh/known_hosts
 
-    # - name: Deploy to server
-    #   env:
-    #     DEPLOY_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-    #   run: |
-    #     echo "$DEPLOY_KEY" > deploy_key
-    #     chmod 600 deploy_key
-    #     # Add the host key to known hosts
-    #     ssh-keyscan -H 13.60.98.236 >> ~/.ssh/known_hosts
-    #     ssh -o StrictHostKeyChecking=no -i deploy_key ec2-user@13.60.98.236 "cd /home/ec2-user/aws-docker-s3 && git checkout master && git pull origin master && npm install && pm2 restart app --update-env"
-    #     rm deploy_key
+      - name: Deploy to EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no -i deploy_key ec2-user@13.60.98.236 << 'EOF'
+            cd /home/ec2-user/aws-docker-s3
+            git pull origin master
+            npm install
+            pm2 restart app --update-env
+          EOF
 
-    - name: Deploy to server
-      env:
-        DEPLOY_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      run: |
-        # Create the .ssh directory if it doesn't exist
-        mkdir -p ~/.ssh
-
-        # Write the private key to a file
-        echo "$DEPLOY_KEY" > deploy_key
-        chmod 600 deploy_key
-        
-        # Add the host key to known hosts
-        ssh-keyscan -H 13.60.98.236 >> ~/.ssh/known_hosts
-        
-        # Attempt SSH connection and deploy
-        ssh -o StrictHostKeyChecking=no -i deploy_key ec2-user@13.60.98.236 << 'EOF'
-          cd /home/ec2-user/aws-docker-s3
-          git checkout master
-          git pull origin master
-          npm install
-          pm2 restart app --update-env
-        EOF
-        
-        # Clean up the private key file
-        rm deploy_key
-
+      - name: Cleanup
+        run: rm deploy_key
