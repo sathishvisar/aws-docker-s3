@@ -19,9 +19,6 @@
   },
   "homepage": "https://github.com/sathishvisar/aws-docker-s3#readme",
   "dependencies": {
-    "@emotion/react": "^11.13.3",
-    "@emotion/styled": "^11.13.0",
-    "@mui/icons-material": "^6.1.5",
     "@mui/material": "^6.1.5",
     "dotenv": "^16.4.5",
     "mongoose": "^8.7.3",
