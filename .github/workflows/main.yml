@@ -3,35 +3,36 @@ name: Docker CI/CD
 on:
   push:
     branches:
-      - main
+      - master  # This will trigger on every push to the main branch, including merges
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Log in to Docker Hub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build and tag Docker image
-      run: |
-        docker build -t sathishvisar/my-image-name:latest .
-        docker tag sathishvisar/my-image-name:latest sathishvisar/my-image-name:latest
+      - name: Build and tag Docker image
+        run: |
+          docker build -t my-node-app .
+          docker tag my-node-app:latest sathishvisar/my-image-name:latest
 
-    - name: Push Docker image to Docker Hub
-      run: docker push sathishvisar/my-image-name:latest
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker push sathishvisar/my-image-name:latest
 
-    - name: Deploy to Docker server
-      uses: appleboy/ssh-action@v0.1.5
-      with:
-        host: ${{ secrets.SERVER_IP }}
-        username: ec2-user
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          bash ~/deploy.sh
+      - name: Deploy to Docker server
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ec2-user
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            bash ~/deploy.sh
