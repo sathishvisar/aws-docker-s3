@@ -6,7 +6,7 @@ const Home = () => {
   return (
     <Container maxWidth="lg" style={{ marginTop: '20px' }}>
       <Typography variant="h2" align="center" gutterBottom>
-        Welcome to Our Chat Application
+        Welcome to Our Chat Application.
       </Typography>
       <Typography variant="h5" align="center" gutterBottom>
         Connect, Communicate, and Collaborate
