@@ -3,7 +3,7 @@ name: Docker CI/CD
 on:
   push:
     branches:
-      - master  # This will trigger on every push to the main branch, including merges
+      - master  # Triggers on pushes to the master branch
 
 jobs:
   build-and-deploy:
@@ -28,9 +28,11 @@ jobs:
         run: |
           docker push sathishvisar/my-image-name:latest
 
-      - name: Decode PEM key
+      - name: Decode and prepare SSH key
+        env:
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 -d > private-key.pem
+          echo "$SSH_KEY" | base64 -d > private-key.pem
           chmod 600 private-key.pem
 
       - name: Deploy to Docker server
