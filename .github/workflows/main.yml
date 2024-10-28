@@ -28,21 +28,19 @@ jobs:
         run: |
           docker push sathishvisar/my-image-name:latest
 
-      # - name: Decode and prepare SSH key
-      #   env:
-      #     SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      #   run: |
-      #     echo "$SSH_KEY"
-      #     echo "$SSH_KEY" | base64 -d > private-key.pem
-      #     chmod 600 private-key.pem
+      - name: Decode and prepare SSH key
+        env:
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          echo "$SSH_KEY"
+          echo "$SSH_KEY" | base64 -d > private-key.pem
+          chmod 600 private-key.pem
 
       - name: Deploy to Docker server
-        uses: appleboy/ssh-action@v0.1.5
+        uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ec2-user
-          # key: private-key.pem
-          key: ${{ secrets.SSH_PRIVATE_KEY }}  # Pass the key directly
-          script: |
-            bash ~/deploy.sh
-          debug: true
+          key: private_key.pem
+          source: "deploy.sh"
+          target: "/home/ec2-user/deploy.sh"  # Target path on the server
