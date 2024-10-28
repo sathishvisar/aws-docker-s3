@@ -16,6 +16,11 @@ echo "Pulling the latest image from Docker Hub..."
 docker pull sathishvisar/my-image-name:latest
 
 sleep 2
+# Build the latest image
+echo "Build latest code"
+docker docker build -t sathishvisar/my-image-name:latest .
+
+sleep 2
 # Run the new container
 echo "Running the new container..."
-docker run -d --name my-node-app -p 3000:3000 sathishvisar/my-image-name:latest
+docker run --platform linux/amd64 -d --name my-node-app -p 3000:3000 sathishvisar/my-image-name:latest
