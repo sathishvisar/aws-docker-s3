@@ -4,6 +4,7 @@ node_modules
 public/js
 public/css/*.css
 temp
+.github
 env.json
 .DS_Store
 public/external_posts_images/*.jpg
@@ -12,3 +13,5 @@ logs
 .history
 .idea/
 package-lock.json
+# Next.js build output
+.next

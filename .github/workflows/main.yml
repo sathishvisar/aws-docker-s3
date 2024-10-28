@@ -22,11 +22,11 @@ jobs:
         run: |
           echo "$DEPLOY_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H 13.60.98.236 >> ~/.ssh/known_hosts
+          ssh-keyscan -H 16.171.32.93 >> ~/.ssh/known_hosts
 
       - name: Deploy to EC2
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key ec2-user@13.60.98.236 << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key ec2-user@16.171.32.93 << 'EOF'
             cd /home/ec2-user/aws-docker-s3
             git pull origin master
             npm install
