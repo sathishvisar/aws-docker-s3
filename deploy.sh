@@ -18,7 +18,7 @@ docker pull sathishvisar/my-image-name:latest
 sleep 2
 # Build the latest image
 echo "Build latest code"
-docker docker build -t sathishvisar/my-image-name:latest .
+docker build -t sathishvisar/my-image-name:latest .
 
 sleep 2
 # Run the new container
