@@ -13,15 +13,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16' # Specify your Node.js version
-
-      - name: Install AWS CLI
-        run: |
-          sudo apt-get install -y awscli
-
       - name: Create .ssh directory
         run: mkdir -p ~/.ssh
 
@@ -29,13 +20,13 @@ jobs:
         env:
           DEPLOY_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
-          echo "$DEPLOY_KEY" > deploy_key
-          chmod 600 deploy_key
+          echo "$DEPLOY_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H 13.60.98.236 >> ~/.ssh/known_hosts
 
       - name: Deploy to EC2
         run: |
-          ssh -o StrictHostKeyChecking=no -i deploy_key ec2-user@13.60.98.236 << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key ec2-user@13.60.98.236 << 'EOF'
             cd /home/ec2-user/aws-docker-s3
             git pull origin master
             npm install
@@ -43,4 +34,4 @@ jobs:
           EOF
 
       - name: Cleanup
-        run: rm deploy_key
+        run: rm ~/.ssh/deploy_key
