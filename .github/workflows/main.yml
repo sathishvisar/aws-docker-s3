@@ -41,6 +41,8 @@ jobs:
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ec2-user
-          key: private-key.pem
+          # key: private-key.pem
+          key: ${{ secrets.SSH_PRIVATE_KEY }}  # Pass the key directly
           script: |
             bash ~/deploy.sh
+          debug: true
